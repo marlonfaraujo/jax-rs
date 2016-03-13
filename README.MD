@@ -1,8 +1,5 @@
 ﻿##Examples
 
-This folder contains several Java Projects that you can use to try RAML for JAX-RS (JAX-RS->RAML generation).
-The following snippets show one Java Class included on the examples, and the RAML result that the tool will generate for that class:
-
 Java Class (AccountService.java):
 ```java
 package com.marlon.mockup.api;

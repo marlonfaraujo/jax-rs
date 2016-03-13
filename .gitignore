@@ -12,6 +12,20 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+*~
+*.iml
+.idea
+.springBeans
+target/
+Ddo*
+ddo*
+nogit/
+/.settings
+/.project
+.metadata
+RemoteSystemsTempFiles
+/.gradle
+
 
 # ---- NETBEANS -----
 

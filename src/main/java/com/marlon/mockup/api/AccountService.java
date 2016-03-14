@@ -4,6 +4,8 @@
  */
 package com.marlon.mockup.api;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.util.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -46,32 +48,39 @@ public class AccountService {
     @Path("/user{id: (/\\d+)?}")
     public Response get(@PathParam("id") String id){
         
-        long dateTime = new Date().getTime();
-        StringBuilder json = new StringBuilder();
+        String strJson = "";
+        JsonObject jsonObject = new JsonObject();
         
         if(id.isEmpty()){
-            json.append("[{\"id\":12,");
-            json.append("\"name\":\"Lorem ipsum.\",");
-            json.append("\"cpf\":\"666.666.666-66\",");
-            json.append("\"email\":\"loremipsum@gmail.com\",");
-            json.append("\"phone\":\"(31)98888-8888\",");
-            json.append("\"createdAt\":\"%s\"},");
-            json.append("{\"id\": 13,");
-            json.append("\"name\":\"Marlon Araújo.\",");
-            json.append("\"cpf\":\"090.122.616-51\",");
-            json.append("\"email\":\"marlonfda@gmail.com\",");
-            json.append("\"phone\":\"(31)99999-9999\",");
-            json.append("\"createdAt\":\"%s\"}]");
+            JsonArray jsonArray = new JsonArray();
+            jsonObject.addProperty("id", 12);
+            jsonObject.addProperty("name", "Lorem ipsum");
+            jsonObject.addProperty("cpf", "666.666.666-66");
+            jsonObject.addProperty("email", "loremipsum@gmail.com");
+            jsonObject.addProperty("phone", "(31)98888-8888");
+            jsonObject.addProperty("createdAt", new Date().getTime());
+            jsonArray.add(jsonObject);
+            
+            jsonObject = new JsonObject();
+            jsonObject.addProperty("id", 13);
+            jsonObject.addProperty("name", "Marlon Araújo");
+            jsonObject.addProperty("cpf", "090.122.616-51");
+            jsonObject.addProperty("email", "marlonfda@gmail.com");
+            jsonObject.addProperty("phone", "(31)99999-9999");
+            jsonObject.addProperty("createdAt", new Date().getTime());
+            jsonArray.add(jsonObject);
+            
+            strJson = jsonArray.toString();
         }else{
-            json.append("{\"id\": 13,");
-            json.append("\"name\":\"Marlon Araújo.\",");
-            json.append("\"cpf\":\"090.122.616-51\",");
-            json.append("\"email\":\"marlonfda@gmail.com\",");
-            json.append("\"phone\":\"(31)99999-9999\",");
-            json.append("\"createdAt\":\"%s\"}");
+            jsonObject.addProperty("id", 13);
+            jsonObject.addProperty("name", "Marlon Araújo");
+            jsonObject.addProperty("cpf", "090.122.616-51");
+            jsonObject.addProperty("email", "marlonfda@gmail.com");
+            jsonObject.addProperty("phone", "(31)99999-9999");
+            jsonObject.addProperty("createdAt", new Date().getTime());
+            
+            strJson = jsonObject.toString();
         }
-        
-        String strJson = String.format(json.toString(), dateTime, dateTime).toString();
         
 	return Response.ok(strJson, MediaType.APPLICATION_JSON + ";charset=utf-8").build();
     }

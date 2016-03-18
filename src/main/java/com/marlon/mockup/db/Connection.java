@@ -15,9 +15,9 @@ import java.sql.SQLException;
 public class Connection {
     
     private static ConnectionSource connectionSource = null;
-    private static String databaseUrl = "jdbc:mysql://localhost:3306/test";
-    private static String userdb = "root";
-    private static String passworddb = "";
+    private static final String databaseUrl = "jdbc:mysql://localhost:3306/test";
+    private static final String userdb = "root";
+    private static final String passworddb = "";
 
     private Connection(){
 
@@ -25,9 +25,7 @@ public class Connection {
     
     public synchronized static ConnectionSource getInstance() throws SQLException{
         if(connectionSource == null){
-            connectionSource = new JdbcConnectionSource(databaseUrl);
-            ((JdbcConnectionSource) connectionSource).setUsername(userdb);
-            ((JdbcConnectionSource) connectionSource).setPassword(passworddb);
+            connectionSource = new JdbcConnectionSource(databaseUrl, userdb, passworddb);
         }
         return connectionSource;
     }

@@ -6,6 +6,8 @@ package com.marlon.mockup.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.marlon.mockup.db.DAOAccount;
+import java.sql.SQLException;
 import java.util.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -84,4 +86,26 @@ public class AccountService {
         
 	return Response.ok(strJson, MediaType.APPLICATION_JSON + ";charset=utf-8").build();
     }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Path("/users")
+    public Response list(){
+        
+        String strJson = "";
+        JsonObject jsonObject = new JsonObject();
+        try {
+            DAOAccount daoAccount = new DAOAccount();
+            strJson = daoAccount.list();
+        } catch (SQLException ex) {
+            jsonObject.addProperty("code", 300);
+            jsonObject.addProperty("message", "Erro database.");
+            strJson = jsonObject.toString();
+            
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(strJson).type(MediaType.APPLICATION_JSON + ";charset=utf-8").build();	
+        }
+        return Response.ok(strJson, MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+    }
+    
 }

@@ -27,8 +27,10 @@ public class Account {
     @DatabaseField(canBeNull = false, unique = true)
     private String email;
     
+    @DatabaseField
     private String phone;
     
+    @DatabaseField
     private long createdAt;
 
     public int getId() {

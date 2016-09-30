@@ -1,4 +1,7 @@
-﻿##Examples
+﻿
+[![Build Status](https://travis-ci.org/marlonfda/jax-rs.svg?branch=master)](https://travis-ci.org/marlonfda/jax-rs)
+
+##Examples
 
 Java Class (AccountService.java):
 ```java
@@ -13,53 +16,43 @@ public class AccountService {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response register(String content) {
         long dateTime = new Date().getTime();
-        StringBuilder json = new StringBuilder();
-        
-        json.append("{\"id\": 13,");
-        json.append("\"name\":\"Marlon Araújo.\",");
-        json.append("\"cpf\":\"090.122.616-51\",");
-        json.append("\"email\":\"marlonfda@gmail.com\",");
-        json.append("\"phone\":\"(31)99999-9999\",");
-        json.append("\"createdAt\":\"%s\"}");
-        
-        String strJson = String.format(json.toString(), dateTime).toString();
-        
-	return Response.ok(strJson, MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+        JsonObject jsonObject = new JsonObject();
+        try{
+            Account account = new Gson().fromJson(content, Account.class);
+            account.setCreatedAt(dateTime);
+            new DAOAccount().create(account);
+        }catch(SQLException e){
+            jsonObject.addProperty("code", 300);
+            jsonObject.addProperty("message", "Erro database.");
+            jsonObject.addProperty("description", e.getMessage());
+            
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(jsonObject.toString()).type(MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+        }
+        return Response.ok(content, MediaType.APPLICATION_JSON + ";charset=utf-8").build();
     }
     
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @Path("/user{id: (/\\d+)?}")
-    public Response get(@PathParam("id") String id){
+    @Path("/user{noop: (/)?}{id: ((?<=/)\\d+)?}")
+    public Response get(@PathParam("id") int id){
         
-        long dateTime = new Date().getTime();
-        StringBuilder json = new StringBuilder();
+        Account account;
+        JsonObject jsonObject = new JsonObject();
         
-        if(id.isEmpty()){
-            json.append("[{\"id\":12,");
-            json.append("\"name\":\"Lorem ipsum.\",");
-            json.append("\"cpf\":\"666.666.666-66\",");
-            json.append("\"email\":\"loremipsum@gmail.com\",");
-            json.append("\"phone\":\"(31)98888-8888\",");
-            json.append("\"createdAt\":\"%s\"},");
-            json.append("{\"id\": 13,");
-            json.append("\"name\":\"Marlon Araújo.\",");
-            json.append("\"cpf\":\"090.122.616-51\",");
-            json.append("\"email\":\"marlonfda@gmail.com\",");
-            json.append("\"phone\":\"(31)99999-9999\",");
-            json.append("\"createdAt\":\"%s\"}]");
-        }else{
-            json.append("{\"id\": 13,");
-            json.append("\"name\":\"Marlon Araújo.\",");
-            json.append("\"cpf\":\"090.122.616-51\",");
-            json.append("\"email\":\"marlonfda@gmail.com\",");
-            json.append("\"phone\":\"(31)99999-9999\",");
-            json.append("\"createdAt\":\"%s\"}");
+        try{
+            account = (Account) new DAOAccount().get(id);
+        }catch(SQLException e){
+            jsonObject.addProperty("code", 300);
+            jsonObject.addProperty("message", "Erro database.");
+            jsonObject.addProperty("description", e.getMessage());
+            
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(jsonObject.toString()).type(MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+            
         }
         
-        String strJson = String.format(json.toString(), dateTime, dateTime).toString();
-        
-	return Response.ok(strJson, MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+        return Response.ok(new Gson().toJson(account), MediaType.APPLICATION_JSON + ";charset=utf-8").build();
     }
 }
 

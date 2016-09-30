@@ -34,6 +34,9 @@ public class AccountService {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response register(String content) {
         long dateTime = new Date().getTime();
+        //StringBuilder json = new StringBuilder();
+        //json.append("\"createdAt\":\"%s\"}");
+        //String strJson = String.format(json.toString(), dateTime).toString();
         JsonObject jsonObject = new JsonObject();
         try{
             Account account = new Gson().fromJson(content, Account.class);
@@ -70,7 +73,16 @@ public class AccountService {
             
         }
         
-	return Response.ok(new Gson().toJson(account), MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+        if(account == null){
+            jsonObject.addProperty("code", 500);
+            jsonObject.addProperty("message", "Not found");
+            jsonObject.addProperty("description", "Usuário não encontrado com os parâmetros informados");
+            
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(jsonObject.toString()).type(MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+            
+        }
+        return Response.ok(new Gson().toJson(account), MediaType.APPLICATION_JSON + ";charset=utf-8").build();
     }
     
     @GET

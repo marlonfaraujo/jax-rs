@@ -34,6 +34,9 @@ public class AccountService {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response register(String content) {
         long dateTime = new Date().getTime();
+        //StringBuilder json = new StringBuilder();
+        //json.append("\"createdAt\":\"%s\"}");
+        //String strJson = String.format(json.toString(), dateTime).toString();
         JsonObject jsonObject = new JsonObject();
         try{
             Account account = new Gson().fromJson(content, Account.class);

@@ -73,7 +73,16 @@ public class AccountService {
             
         }
         
-	return Response.ok(new Gson().toJson(account), MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+        if(account == null){
+            jsonObject.addProperty("code", 500);
+            jsonObject.addProperty("message", "Not found");
+            jsonObject.addProperty("description", "Usuário não encontrado com os parâmetros informados");
+            
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(jsonObject.toString()).type(MediaType.APPLICATION_JSON + ";charset=utf-8").build();
+            
+        }
+        return Response.ok(new Gson().toJson(account), MediaType.APPLICATION_JSON + ";charset=utf-8").build();
     }
     
     @GET
